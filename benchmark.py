@@ -1,44 +1,43 @@
-import numpy
 import time
 
-# generate random arrays
+import numpy
+
+from insertionsort import insertionsort as insertionsort
+from selectionsort import selectionsort as selectionsort
+
+
+algorithms = [insertionsort, selectionsort]
+benchmarks = [25, 100, 1000, 10000]
 
 
 def gen_array(length):
     return list(numpy.random.randint(0, int(length) * 2, int(length)))
 
 
-def selectionsort(array):
-    for i in range(0, len(array)):
-        min = i
-        for k in range(i, len(array)):
-            if array[k] < array[min]:
-                min = k
-        temp = array[min]
-        array[min] = array[i]
-        array[i] = temp
-    return array
+def start():
+    global tstart
+    tstart = time.time()
 
 
-def insertionsort(array):
-    for i in range(1, len(array)):
-        key = array[i]
-        j = i
-        while j > 0 and key < array[j - 1]:
-            array[j] = array[j - 1]
-            j -= 1
-        array[j] = key
-    return array
+def stop():
+    global tstart
+    ttotal = time.time() - tstart
+    return ttotal
 
 
-rand_array = gen_array(1500)
+def benchmark(function):
+    for i in benchmarks:
+        randarray = gen_array(i)
+        start()
+        function(randarray)
+        print("{}, len = {:6d} >>> {}s".format(function.__name__, i, stop()))
+    print("------")
 
-start = time.time()
-insertionsort = insertionsort(rand_array)
-stop = time.time()
-print("Insertionsort => {:.5}ms".format((stop - start) * 1000))
 
-start = time.time()
-selectionsort = selectionsort(rand_array)
-stop = time.time()
-print("Selectionsort => {:.5}ms".format((stop - start) * 1000))
+def main():
+    for x in algorithms:
+        benchmark(x)
+
+
+if __name__ == '__main__':
+    main()
