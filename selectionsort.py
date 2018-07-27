@@ -7,9 +7,7 @@ def selectionsort(array):
         for k in range(i, len(array)):
             if array[k] < array[min]:
                 min = k
-        temp = array[min]
-        array[min] = array[i]
-        array[i] = temp
+        array[min], array[i] = array[i], array[min]
     return array
 
 

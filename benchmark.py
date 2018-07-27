@@ -3,15 +3,15 @@ import time
 import numpy
 
 from insertionsort import insertionsort as insertionsort
+from quicksort import quicksort as quicksort
 from selectionsort import selectionsort as selectionsort
 
-
-algorithms = [insertionsort, selectionsort]
-benchmarks = [25, 100, 1000, 10000]
+algorithms = [quicksort, insertionsort, selectionsort]
+benchmarks = [1000, 10000, 50000, 1000000]
 
 
 def gen_array(length):
-    return list(numpy.random.randint(0, int(length) * 2, int(length)))
+    return list(numpy.random.randint(0, int(length) * 3, int(length)))
 
 
 def start():
@@ -29,8 +29,11 @@ def benchmark(function):
     for i in benchmarks:
         randarray = gen_array(i)
         start()
-        function(randarray)
-        print("{}, len = {:6d} >>> {}s".format(function.__name__, i, stop()))
+        if function == quicksort:
+            function(randarray, 0, len(randarray) - 1)
+        else:
+            function(randarray)
+        print("{:13s}, len = {:6d} >>> {}s".format(function.__name__, i, stop()))
     print("------")
 
 
