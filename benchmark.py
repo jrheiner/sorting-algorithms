@@ -1,3 +1,4 @@
+import threading
 import time
 
 import numpy
@@ -7,7 +8,7 @@ from quicksort import quicksort as quicksort
 from selectionsort import selectionsort as selectionsort
 
 algorithms = [quicksort, insertionsort, selectionsort]
-benchmarks = [1000, 10000, 50000, 1000000]
+benchmarks = [1000, 10000, 50000]  # 1000000
 
 
 def gen_array(length):
@@ -26,6 +27,7 @@ def stop():
 
 
 def benchmark(function):
+    output = []
     for i in benchmarks:
         randarray = gen_array(i)
         start()
@@ -33,13 +35,24 @@ def benchmark(function):
             function(randarray, 0, len(randarray) - 1)
         else:
             function(randarray)
-        print("{:13s}, len = {:6d} >>> {}s".format(function.__name__, i, stop()))
-    print("------")
+        output.append("{:13s} len = {:6d} >>> {}s".format(
+            function.__name__, i, stop()))
+    for line in output:
+        print(line)
+    threads = threading.active_count() - 1
+    if threads > 1:
+        print(
+            "------ [{} thread(s) still running] ------".format(
+                threading.active_count() - 2))
+    else:
+        print("------ [finished] ------")
 
 
 def main():
     for x in algorithms:
-        benchmark(x)
+        t = threading.Thread(target=benchmark, args=(x,))
+        t.name = x
+        t.start()
 
 
 if __name__ == '__main__':
