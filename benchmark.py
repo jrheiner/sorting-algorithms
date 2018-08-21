@@ -6,9 +6,10 @@ import numpy
 from insertionsort import insertionsort as insertionsort
 from quicksort import quicksort as quicksort
 from selectionsort import selectionsort as selectionsort
+from bubblesort import bubblesort as bubblesort
 
-algorithms = [quicksort, insertionsort, selectionsort]
-benchmarks = [1000, 10000, 50000]  # 1000000
+algorithms = [quicksort, insertionsort, selectionsort, bubblesort]
+benchmarks = [500, 1000, 5000]
 
 
 def gen_array(length):
@@ -35,12 +36,14 @@ def benchmark(function):
             function(randarray, 0, len(randarray) - 1)
         else:
             function(randarray)
-        output.append("{:13s} len = {:6d} >>> {}s".format(
+        output.append("{:13s} - n:{:6d} >>> {}s".format(
             function.__name__, i, stop()))
     for line in output:
         print(line)
     threads = threading.active_count() - 1
-    if threads > 1:
+    if threads == 2:
+        print("------ [1 thread still running] ------")
+    elif threads > 2:
         print(
             "------ [{} thread(s) still running] ------".format(
                 threading.active_count() - 2))
